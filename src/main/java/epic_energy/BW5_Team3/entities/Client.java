@@ -2,9 +2,7 @@ package epic_energy.BW5_Team3.entities;
 
 import epic_energy.BW5_Team3.enums.ClientType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "clients")
 @Getter
+@Setter
 @NoArgsConstructor
 @ToString(exclude = {"legalAddress", "operationalAddress"})
 public class Client {
