@@ -1,4 +1,8 @@
 package epic_energy.BW5_Team3.payloads.responseDTOs;
 
-public record ClientResponseDTO() {
+import java.util.UUID;
+
+public record ClientResponseDTO(
+        UUID clientId
+) {
 }
