@@ -19,6 +19,7 @@ public class Client {
 
     @Id
     @GeneratedValue
+    @Setter(AccessLevel.NONE)
     private UUID clientId;
 
     @Column(nullable = false)
@@ -88,3 +89,4 @@ public class Client {
         this.entryDate = entryDate; //nel service LocalDate.now()
     }
 }
+

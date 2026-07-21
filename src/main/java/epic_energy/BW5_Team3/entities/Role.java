@@ -1,14 +1,21 @@
 package epic_energy.BW5_Team3.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
+@Table(name="role")
+@Getter
+@Setter
 public class Role {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roleId;
+
+    @Column(nullable = false)
+    private String role;
+
 }
