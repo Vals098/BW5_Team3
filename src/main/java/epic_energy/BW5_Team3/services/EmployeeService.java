@@ -33,7 +33,7 @@ public class EmployeeService {
         Employee newEmployee = new Employee();
         newEmployee.setUsername(body.getUsername());
         newEmployee.setEmail(body.getEmail());
-        newEmployee.setPassword(body.getPassword()); // Recuerda aplicar BCryptPasswordEncoder aquí si usas Spring Security
+        newEmployee.setPassword(body.getPassword());
         newEmployee.setName(body.getName());
         newEmployee.setSurname(body.getSurname());
 

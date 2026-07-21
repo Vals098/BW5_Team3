@@ -15,11 +15,11 @@ public class AuthService {
 
     public String authenticateAndGenerateToken(EmployeeLoginDTO body) {
         Employee employee = employeeRepository.findByEmail(body.getEmail())
-                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
 
         if (!employee.getPassword().equals(body.getPassword())) {
-            throw new RuntimeException("Credenciales inválidas");
+            throw new RuntimeException("Invalid credentials");
         }
 
 
