@@ -22,14 +22,14 @@ public class EmployeeService {
     private RoleRepository roleRepository;
 
     public Employee save(EmployeeDTO body) {
-        // 1. Obtener las entidades Role a partir de los IDs enviados
+
         List<Role> rolesList = roleRepository.findAllById(body.getRolesIds());
 
         if (rolesList.isEmpty()) {
             throw new RuntimeException("Los roles especificados no existen");
         }
 
-        // 2. Mapear DTO a Entity
+
         Employee newEmployee = new Employee();
         newEmployee.setUsername(body.getUsername());
         newEmployee.setEmail(body.getEmail());
@@ -43,7 +43,7 @@ public class EmployeeService {
 
         newEmployee.setRoles(new HashSet<>(rolesList));
 
-        // 3. Guardar en BD
+
         return employeeRepository.save(newEmployee);
     }
 }
