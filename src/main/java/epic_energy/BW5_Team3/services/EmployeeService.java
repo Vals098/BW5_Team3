@@ -5,8 +5,8 @@ import epic_energy.BW5_Team3.entities.Role;
 import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
-import epic_energy.BW5_Team3.repositories.ClientRepository;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
+import epic_energy.BW5_Team3.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private ClientRepository.RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
