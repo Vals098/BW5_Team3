@@ -12,10 +12,8 @@ public class DataSeeder implements CommandLineRunner {
 
     @Autowired
     private CsvImportService csvImportService;
-
     @Autowired
     private ProvinciaRepository provinciaRepository;
-
     @Autowired
     private ComuneRepository comuneRepository;
 
