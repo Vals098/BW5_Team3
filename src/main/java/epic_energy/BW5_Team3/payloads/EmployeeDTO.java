@@ -35,5 +35,5 @@ public class EmployeeDTO {
     private String avatar; //Optional (if not provided, the entity assigns the default image)
 
     @NotEmpty(message = "The employee must have at least one assigned role")
-    private Set<Integer> rolesIds; 
+    private Set<Integer> rolesIds;
 }
