@@ -2,7 +2,7 @@ package epic_energy.BW5_Team3.controllers;
 
 
 import epic_energy.BW5_Team3.entities.Employee;
-import epic_energy.BW5_Team3.payloads.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
 import epic_energy.BW5_Team3.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

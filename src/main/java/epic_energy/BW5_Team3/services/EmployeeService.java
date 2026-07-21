@@ -2,7 +2,7 @@ package epic_energy.BW5_Team3.services;
 
 import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.entities.Role;
-import epic_energy.BW5_Team3.payloads.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
 import epic_energy.BW5_Team3.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class EmployeeService {
