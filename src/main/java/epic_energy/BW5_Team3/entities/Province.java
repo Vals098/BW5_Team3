@@ -23,7 +23,6 @@ public class Province {
     @Column(nullable = false)
     private String region;
 
-//    @OneToMany(mappedBy = "province")
-//    private List<Municipality> municipalities;
+
 
 }

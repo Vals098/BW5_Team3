@@ -33,7 +33,7 @@ public class AddressController {
         );
     }
 
-    // GET /addresses 
+    // GET /addresses
     @GetMapping
     public Page<AddressResponseDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
