@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,21 +11,32 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     //    FILTER CHAIN
 //    setup iniziale con endpoints sbloccati per facilitare i controlli iniziali al team
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JWTFilter jwtFilter) throws Exception {
 
         httpSecurity.formLogin(formLogin -> formLogin.disable());
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.csrf(csrf -> csrf.disable());
-        httpSecurity.authorizeHttpRequests(req -> req.requestMatchers("/**").permitAll());
+        httpSecurity.authorizeHttpRequests(req -> req
 
 
+                .requestMatchers(HttpMethod.GET, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.POST, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/client/invoices/**").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/client/invoices/**").hasAuthority("ADMIN")
+                .requestMatchers("/**").permitAll()
+                
+                .anyRequest().authenticated());
+
+        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 
