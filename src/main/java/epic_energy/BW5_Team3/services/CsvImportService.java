@@ -37,7 +37,7 @@ public class CsvImportService {
             Map.entry("Vibo Valentia", "Vibo-Valentia")
     );
     @Autowired
-    private ProvinceRepository provinciaRepository;
+    private ProvinceRepository provinceRepository;
     @Autowired
     private MunicipalityRepository comuneRepository;
 
@@ -66,7 +66,7 @@ public class CsvImportService {
                 province.add(p);
             }
         }
-        provinciaRepository.saveAll(province);
+        provinceRepository.saveAll(province);
         return province.size();
     }
 
@@ -74,13 +74,13 @@ public class CsvImportService {
     public int importaComuni(String csvPath) throws Exception {
         // mappa nome , provincia -> entità, per collegare i comuni senza fare una query per riga
         Map<String, Province> mappaProvince = new HashMap<>();
-        provinciaRepository.findAll().forEach(p -> mappaProvince.put(p.getProvinceName(), p));
+        provinceRepository.findAll().forEach(p -> mappaProvince.put(p.getProvinceName(), p));
         if (!mappaProvince.containsKey("Sud Sardegna")) {
             Province sudSardegna = new Province();
             sudSardegna.setAbbreviation("SU");
             sudSardegna.setProvinceName("Sud Sardegna");
             sudSardegna.setRegion("Sardegna");
-            sudSardegna = provinciaRepository.save(sudSardegna);
+            sudSardegna = provinceRepository.save(sudSardegna);
             mappaProvince.put("Sud Sardegna", sudSardegna);
         }
         CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').setSkipHeaderRecord(true).build();

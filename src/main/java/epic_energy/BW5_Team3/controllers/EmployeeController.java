@@ -20,8 +20,9 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // GET /employees
+    // GET /employees (ADMIN)
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Employee> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -41,6 +42,7 @@ public class EmployeeController {
     public Employee getById(@PathVariable UUID employeeId) {
         return employeeService.findById(employeeId);
     }
+
 
     // PUT /employees/{id} (Solo ADMIN)
     @PutMapping("/{employeeId}")

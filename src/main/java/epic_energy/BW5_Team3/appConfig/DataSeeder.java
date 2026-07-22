@@ -17,7 +17,7 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private CsvImportService csvImportService;
     @Autowired
-    private ProvinceRepository provinciaRepository;
+    private ProvinceRepository provinceRepository;
     @Autowired
     private MunicipalityRepository municipalityRepository;
     @Autowired
@@ -28,7 +28,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // importa solo se il database e vuoto
-        if (provinciaRepository.count() == 0) {
+        if (provinceRepository.count() == 0) {
             int nProvince = csvImportService.importaProvince("province-italiane.csv");
             System.out.println("Importate " + nProvince + " province");
         } else {
