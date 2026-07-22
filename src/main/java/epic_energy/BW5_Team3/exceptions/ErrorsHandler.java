@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,12 @@ public class ErrorsHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN) // 403
     public ErrorsDTO handleForbidden(ForbiddenException ex) {
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
+    public ErrorsDTO handleAccessDenied(AccessDeniedException ex) {
+        return new ErrorsDTO("You don't have the authorization to acces this feature", LocalDateTime.now());
     }
 
     @ExceptionHandler
