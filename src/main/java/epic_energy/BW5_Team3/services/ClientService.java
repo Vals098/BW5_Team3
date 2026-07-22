@@ -65,13 +65,26 @@ public class ClientService {
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Invalid client type.");
         }
-//        get addresses from AddressService.findById()
-        Address legalAddress = addressService.findById(payload.legalAddressId());
+//        FIRST ADDRESS IDEA
+//        address already in DB, get addresses from AddressService.findById()
+
+//        Address legalAddress = addressService.findById(payload.legalAddressId());
+//
+//        Address operationalAddress = null;
+//
+//        if (payload.operationalAddressId() != null) {
+//            operationalAddress = addressService.findById(payload.operationalAddressId());
+//        }
+
+//        SECOND ADDRESS IDEA
+        Address legalAddress =
+                addressService.save(payload.legalAddress());
 
         Address operationalAddress = null;
 
-        if (payload.operationalAddressId() != null) {
-            operationalAddress = addressService.findById(payload.operationalAddressId());
+        if (payload.operationalAddress() != null) {
+            operationalAddress =
+                    addressService.save(payload.operationalAddress());
         }
 
 //        2. CREATE CLIENT
