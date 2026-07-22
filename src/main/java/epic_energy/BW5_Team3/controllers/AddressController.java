@@ -57,9 +57,9 @@ public class AddressController {
         return mapToResponseDTO(saved);
     }
 
-    // PUT /addresses/{id} (Solo SUPER_ADMIN)
+    // PUT /addresses/{id} (Solo ADMIN)
     @PutMapping("/{addressId}")
-    @PreAuthorize("hasAuthority('SUPER_ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public AddressResponseDTO updateAddress(@PathVariable UUID addressId, @RequestBody @Valid AddressRequestDTO body) {
         Address updated = addressService.findByIdAndUpdate(addressId, body);
         return mapToResponseDTO(updated);
