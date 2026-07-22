@@ -150,12 +150,10 @@ public class ClientService {
         return this.clientRepository.findById(clientId).orElseThrow(() -> new NotFoundException("The client with id: '" + clientId + "' has not been found."));
     }
 
-    public List<Client> orderByParam(Sort sort) {
-        return clientRepository.findAll(sort);
     //   --------------------------- GET ALL CLIENTS -----------------------
 //    GET (base_url}/clients
-    public Page<Client> findAll(int page, int size, String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+    public Page<Client> findAll(int page, int size, Sort sort) {
+        Pageable pageable = PageRequest.of(page, size, sort);
         return clientRepository.findAll(pageable);
     }
 
