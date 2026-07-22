@@ -3,7 +3,6 @@ package epic_energy.BW5_Team3.payloads.requestDTOs;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
-import java.util.UUID;
 
 public record ClientRequestDTO(
 
@@ -51,9 +50,14 @@ public record ClientRequestDTO(
         @NotBlank(message = "The client type is required.")
         String clientType,
 
-        @NotNull(message = "The legal address is required.")
-        UUID legalAddressId,
+//        @NotNull(message = "The legal address is required.")
+//        UUID legalAddressId,
+//
+//        UUID operationalAddressId,
 
-        UUID operationalAddressId
+        AddressRequestDTO legalAddress,
+
+        AddressRequestDTO operationalAddress
+
 ) {
 }

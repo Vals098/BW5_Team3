@@ -1,8 +1,8 @@
 package epic_energy.BW5_Team3.services;
 
-import epic_energy.BW5_Team3.entities.Comune;
-import epic_energy.BW5_Team3.entities.Provincia;
-import epic_energy.BW5_Team3.repositories.ComuneRepository;
+import epic_energy.BW5_Team3.entities.Municipality;
+import epic_energy.BW5_Team3.entities.Province;
+import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
 import epic_energy.BW5_Team3.repositories.ProvinciaRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -23,21 +23,6 @@ import java.util.Map;
 @Service
 public class CsvImportService {
 
-    @Autowired
-    private ProvinciaRepository provinciaRepository;
-
-    @Autowired
-    private ComuneRepository comuneRepository;
-
-    private String leggiContenutoSenzaBom(String classpathFile) throws IOException {
-        InputStream is = new ClassPathResource(classpathFile).getInputStream();
-        String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-        if (content.startsWith("\uFEFF")) {
-            content = content.substring(1); // rimuove il BOM
-        }
-        return content;
-    }
-
     private static final Map<String, String> ALIAS_PROVINCE = Map.ofEntries(
             Map.entry("Ascoli Piceno", "Ascoli-Piceno"),
             Map.entry("Bolzano/Bozen", "Bolzano"),
@@ -51,20 +36,33 @@ public class CsvImportService {
             Map.entry("Verbano-Cusio-Ossola", "Verbania"),
             Map.entry("Vibo Valentia", "Vibo-Valentia")
     );
+    @Autowired
+    private ProvinciaRepository provinciaRepository;
+    @Autowired
+    private MunicipalityRepository comuneRepository;
+
+    private String leggiContenutoSenzaBom(String classpathFile) throws IOException {
+        InputStream is = new ClassPathResource(classpathFile).getInputStream();
+        String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+        if (content.startsWith("\uFEFF")) {
+            content = content.substring(1); // rimuove il BOM
+        }
+        return content;
+    }
 
     @Transactional
     public int importaProvince(String csvPath) throws Exception {
         CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(";").setHeader().setSkipHeaderRecord(true).build();
 
-        List<Provincia> province = new ArrayList<>();
+        List<Province> province = new ArrayList<>();
 
 
         try (CSVParser parser = CSVParser.parse(leggiContenutoSenzaBom(csvPath), format)) {
             for (CSVRecord record : parser) {
-                Provincia p = new Provincia();
-                p.setSigla(record.get("Sigla").trim());
-                p.setNome(record.get("Provincia").trim());
-                p.setRegione(record.get("Regione").trim());
+                Province p = new Province();
+                p.setAbbreviation(record.get("Sigla").trim());
+                p.setProvinceName(record.get("Provincia").trim());
+                p.setRegion(record.get("Regione").trim());
                 province.add(p);
             }
         }
@@ -75,40 +73,40 @@ public class CsvImportService {
     @Transactional
     public int importaComuni(String csvPath) throws Exception {
         // mappa nome , provincia -> entità, per collegare i comuni senza fare una query per riga
-        Map<String, Provincia> mappaProvince = new HashMap<>();
-        provinciaRepository.findAll().forEach(p -> mappaProvince.put(p.getNome(), p));
-        if (!mappaProvince.containsKey("Sud Sardegna")){
-            Provincia sudSardegna = new Provincia();
-            sudSardegna.setSigla("SU");
-            sudSardegna.setNome("Sud Sardegna");
-            sudSardegna.setRegione("Sardegna");
+        Map<String, Province> mappaProvince = new HashMap<>();
+        provinciaRepository.findAll().forEach(p -> mappaProvince.put(p.getProvinceName(), p));
+        if (!mappaProvince.containsKey("Sud Sardegna")) {
+            Province sudSardegna = new Province();
+            sudSardegna.setAbbreviation("SU");
+            sudSardegna.setProvinceName("Sud Sardegna");
+            sudSardegna.setRegion("Sardegna");
             sudSardegna = provinciaRepository.save(sudSardegna);
             mappaProvince.put("Sud Sardegna", sudSardegna);
         }
         CSVFormat format = CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(';').setSkipHeaderRecord(true).build();
-        List<Comune> comuni = new ArrayList<>();
+        List<Municipality> comuni = new ArrayList<>();
         int nonTrovati = 0;
         try (CSVParser parser = CSVParser.parse(leggiContenutoSenzaBom(csvPath), format)) {
             for (CSVRecord record : parser) {
                 if (record.size() < 4) continue;
                 String nomeProvincia = record.get(3).trim();
-                Provincia provincia = mappaProvince.get(nomeProvincia);
-                if (provincia== null){
+                Province province = mappaProvince.get(nomeProvincia);
+                if (province == null) {
                     String alias = ALIAS_PROVINCE.get(nomeProvincia);
-                    if (alias != null){
-                        provincia = mappaProvince.get(alias);
+                    if (alias != null) {
+                        province = mappaProvince.get(alias);
                     }
                 }
-                if (provincia == null) {
+                if (province == null) {
                     nonTrovati++;
                     System.out.println("Provincia non trovata: " + nomeProvincia);
                     continue;
                 }
-                Comune c = new Comune();
-                c.setCodiceProvinciaStorico(record.get(0).trim());
-                c.setProgressivoComune(record.get(1).trim());
-                c.setNome(record.get(2).trim());
-                c.setProvincia(provincia);
+                Municipality c = new Municipality();
+                c.setHistoricalProvinceCode(record.get(0).trim());
+                c.setMunicipalityCode(record.get(1).trim());
+                c.setMunicipalityName(record.get(2).trim());
+                c.setProvince(province);
                 comuni.add(c);
             }
         }

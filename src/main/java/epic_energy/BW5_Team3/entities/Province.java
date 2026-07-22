@@ -4,29 +4,26 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-import java.util.UUID;
-
 @Entity
 @Table(name = "province")
 @Getter
 @Setter
-public class Provincia {
+public class Province {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long provinceId;
 
     @Column(nullable = false, unique = true)
-    private String sigla;
+    private String abbreviation;
 
     @Column(nullable = false)
-    private String nome;
+    private String provinceName;
 
     @Column(nullable = false)
-    private String regione;
+    private String region;
 
-    @OneToMany(mappedBy = "provincia")
-    private List<Comune> comuni;
+//    @OneToMany(mappedBy = "province")
+//    private List<Municipality> municipalities;
 
 }
