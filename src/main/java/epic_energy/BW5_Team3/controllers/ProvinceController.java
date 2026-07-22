@@ -67,4 +67,4 @@ public class ProvinceController {
     public void deleteProvince(@PathVariable Long provinceId) {
         provinceService.findByIdAndDelete(provinceId);
     }
-} 
+}
