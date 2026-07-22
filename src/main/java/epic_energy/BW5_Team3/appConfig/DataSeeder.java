@@ -1,12 +1,8 @@
 package epic_energy.BW5_Team3.appConfig;
 
-
 import epic_energy.BW5_Team3.entities.InvoiceStatus;
 import epic_energy.BW5_Team3.entities.Role;
-import epic_energy.BW5_Team3.repositories.InvoiceStatusRepository;
-import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
-import epic_energy.BW5_Team3.repositories.ProvinceRepository;
-import epic_energy.BW5_Team3.repositories.RoleRepository;
+import epic_energy.BW5_Team3.repositories.*;
 import epic_energy.BW5_Team3.services.CsvImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
