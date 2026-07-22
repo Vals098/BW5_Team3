@@ -32,12 +32,15 @@ public class SecurityConfig {
 
 
         httpSecurity.authorizeHttpRequests(req -> req
-                .requestMatchers(HttpMethod.GET, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
-                .requestMatchers(HttpMethod.POST, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
-                .requestMatchers(HttpMethod.PUT, "/client/invoices/**").hasAuthority("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/client/invoices/**").hasAuthority("ADMIN")
                 // We allow /auth/** without a token and require a token for any other route
-                .requestMatchers("/**").permitAll()
+                .requestMatchers("/auth/**").permitAll()
+
+//                .requestMatchers(HttpMethod.POST, "/invoices/statuses").hasAuthority("ADMIN")
+//
+//                .requestMatchers(HttpMethod.GET, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
+//                .requestMatchers(HttpMethod.POST, "/client/invoices/**").hasAnyAuthority("USER", "ADMIN")
+//                .requestMatchers(HttpMethod.PUT, "/client/invoices/**").hasAuthority("ADMIN")
+//                .requestMatchers(HttpMethod.DELETE, "/client/invoices/**").hasAuthority("ADMIN")
 
                 .anyRequest().authenticated());
         // We added the JWTFilter before Spring's default filter
