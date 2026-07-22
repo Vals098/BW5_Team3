@@ -14,7 +14,8 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @ToString(exclude = {"legalAddress", "operationalAddress"})
-public class Client {
+public class
+Client {
 
     @Id
     @GeneratedValue

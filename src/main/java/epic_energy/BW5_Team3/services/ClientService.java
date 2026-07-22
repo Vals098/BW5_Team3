@@ -9,10 +9,15 @@ import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
+import epic_energy.BW5_Team3.specifications.ClientSpecification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -134,6 +139,10 @@ public class ClientService {
     //    FIND BY ID
     public Client findById(UUID clientId) {
         return this.clientRepository.findById(clientId).orElseThrow(() -> new NotFoundException("The client with id: '" + clientId + "' has not been found."));
+    }
+
+    public List<Client> orderByParam(Sort sort) {
+        return clientRepository.findAll(sort);
     }
 
 }
