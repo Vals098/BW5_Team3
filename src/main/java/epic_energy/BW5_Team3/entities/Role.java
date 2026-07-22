@@ -1,7 +1,9 @@
 package epic_energy.BW5_Team3.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
@@ -9,6 +11,7 @@ import lombok.Setter;
 @Table(name = "role")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Role {
 
     @Id
@@ -18,4 +21,7 @@ public class Role {
     @Column(nullable = false)
     private String role;
 
+    public Role(String role) {
+        this.role = role;
+    }
 }

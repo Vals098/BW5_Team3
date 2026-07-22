@@ -4,12 +4,17 @@ package epic_energy.BW5_Team3.exceptions;
 import epic_energy.BW5_Team3.payloads.ErrorsDTO;
 import epic_energy.BW5_Team3.payloads.ValidationErrorsDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ErrorsHandler {
@@ -40,6 +45,12 @@ public class ErrorsHandler {
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
+    public ErrorsDTO handleAccessDenied(AccessDeniedException ex) {
+        return new ErrorsDTO("You don't have the authorization to acces this feature", LocalDateTime.now());
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND) //404
     public ErrorsDTO handleNotFound(NotFoundException ex) {
@@ -52,6 +63,5 @@ public class ErrorsHandler {
         ex.printStackTrace();
         return new ErrorsDTO("Server side error, will fix soon.", LocalDateTime.now());
     }
-
 
 }
