@@ -6,6 +6,10 @@ import epic_energy.BW5_Team3.entities.Municipality;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.AddressRequestDTO;
 import epic_energy.BW5_Team3.repositories.AddressRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -41,6 +45,31 @@ public class AddressService {
         address.setMunicipality(municipality);
 
         return addressRepository.save(address);
+    }
+
+    // READ ALL (Paginado)
+    public Page<Address> findAll(int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+        return addressRepository.findAll(pageable);
+    }
+    // UPDATE
+    public Address findByIdAndUpdate(UUID addressId, AddressRequestDTO payload) {
+        Address found = this.findById(addressId);
+        Municipality municipality = municipalityService.findByMunicipalityName(payload.municipalityName());
+
+        found.setStreet(payload.street());
+        found.setHouseNumber(payload.houseNumber());
+        found.setLocality(payload.locality());
+        found.setCap(payload.cap());
+        found.setMunicipality(municipality);
+
+        return addressRepository.save(found);
+    }
+
+    // DELETE
+    public void findByIdAndDelete(UUID addressId) {
+        Address found = this.findById(addressId);
+        addressRepository.delete(found);
     }
 
 }

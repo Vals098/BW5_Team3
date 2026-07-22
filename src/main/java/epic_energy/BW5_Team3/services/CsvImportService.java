@@ -3,7 +3,7 @@ package epic_energy.BW5_Team3.services;
 import epic_energy.BW5_Team3.entities.Municipality;
 import epic_energy.BW5_Team3.entities.Province;
 import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
-import epic_energy.BW5_Team3.repositories.ProvinciaRepository;
+import epic_energy.BW5_Team3.repositories.ProvinceRepository;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -37,7 +37,7 @@ public class CsvImportService {
             Map.entry("Vibo Valentia", "Vibo-Valentia")
     );
     @Autowired
-    private ProvinciaRepository provinciaRepository;
+    private ProvinceRepository provinciaRepository;
     @Autowired
     private MunicipalityRepository comuneRepository;
 

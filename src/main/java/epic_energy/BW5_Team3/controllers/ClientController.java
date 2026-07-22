@@ -7,6 +7,7 @@ import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.services.ClientService;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ public class ClientController {
 //    POST {base_url}/clients + payload   USER, ADMIN
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public ClientResponseDTO saveClient(@RequestBody @Validated ClientRequestDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
@@ -44,6 +46,7 @@ public class ClientController {
     //    GET (base_url}/clients   USER, ADMIN
 //    GET (base_url}/clients/{id}  USER, ADMIN
     @GetMapping("/{clientId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
     public Client findById(@PathVariable UUID clientId) {
         return clientService.findById(clientId);
     }
