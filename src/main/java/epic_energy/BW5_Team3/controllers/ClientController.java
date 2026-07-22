@@ -6,6 +6,7 @@ import epic_energy.BW5_Team3.exceptions.ValidationException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.services.ClientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class ClientController {
     //    CRUD
 //    POST {base_url}/clients + payload   USER, ADMIN
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ClientResponseDTO saveClient(@RequestBody @Validated ClientRequestDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
