@@ -42,6 +42,16 @@ public class EmployeeController {
         return employeeService.findById(employeeId);
     }
 
+    //    GET /employees (ADMIN)
+    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public Page<Employee> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "employeeId") String sortBy) {
+        return employeeService.findAll(page, size, sortBy);
+    }
+
     // PUT /employees/{id} (Solo ADMIN)
     @PutMapping("/{employeeId}")
     @PreAuthorize("hasAuthority('ADMIN')")
