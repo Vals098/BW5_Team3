@@ -1,7 +1,8 @@
 package epic_energy.BW5_Team3.appConfig;
 
 import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
-import epic_energy.BW5_Team3.repositories.ProvinciaRepository;
+import epic_energy.BW5_Team3.repositories.ProvinceRepository;
+import epic_energy.BW5_Team3.repositories.ProvinceRepository;
 import epic_energy.BW5_Team3.services.CsvImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +14,7 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private CsvImportService csvImportService;
     @Autowired
-    private ProvinciaRepository provinciaRepository;
+    private ProvinceRepository provinciaRepository;
     @Autowired
     private MunicipalityRepository municipalityRepository;
 
