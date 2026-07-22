@@ -5,6 +5,7 @@ import epic_energy.BW5_Team3.entities.Address;
 import epic_energy.BW5_Team3.entities.Client;
 import epic_energy.BW5_Team3.enums.ClientType;
 import epic_energy.BW5_Team3.exceptions.BadRequestException;
+import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -54,6 +56,7 @@ public class ClientService {
     //    SAVE METHOD
     public ClientResponseDTO save(ClientRequestDTO payload) {
 //        1. CONTROLS
+//        validation methods
         checkDuplicateVat(payload.iva());
         checkDuplicateEmail(payload.email());
         checkDuplicatePec(payload.pec());
@@ -126,6 +129,11 @@ public class ClientService {
 
 //        4. RETURN
         return new ClientResponseDTO(saved.getClientId());
+    }
+
+    //    FIND BY ID
+    public Client findById(UUID clientId) {
+        return this.clientRepository.findById(clientId).orElseThrow(() -> new NotFoundException("The client with id: '" + clientId + "' has not been found."));
     }
 
 }

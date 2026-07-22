@@ -1,18 +1,18 @@
 package epic_energy.BW5_Team3.controllers;
 
 
+import epic_energy.BW5_Team3.entities.Client;
 import epic_energy.BW5_Team3.exceptions.ValidationException;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.services.ClientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/clients")
@@ -27,6 +27,7 @@ public class ClientController {
     //    CRUD
 //    POST {base_url}/clients + payload   USER, ADMIN
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ClientResponseDTO saveClient(@RequestBody @Validated ClientRequestDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
@@ -40,9 +41,14 @@ public class ClientController {
         return clientService.save(payload);
     }
 
-//    GET (base_url}/clients   USER, ADMIN
+    //    GET (base_url}/clients   USER, ADMIN
 //    GET (base_url}/clients/{id}  USER, ADMIN
+    @GetMapping("/{clientId}")
+    public Client findById(@PathVariable UUID clientId) {
+        return clientService.findById(clientId);
+    }
 //    PUT {base_url}/clients/{id} + payload  ADMIN
 //    DELETE (base_url}/clients/{id}  ADMIN
+
 
 }

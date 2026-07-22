@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.controllers;
 import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.payloads.EmployeeLoginDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
 import epic_energy.BW5_Team3.services.AuthService;
 import epic_energy.BW5_Team3.services.EmployeeService;
 import jakarta.validation.Valid;
@@ -23,8 +24,18 @@ public class AuthController {
     // POST {base_url}/auth/register
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Employee register(@RequestBody @Valid EmployeeDTO body) {
-        return employeeService.save(body);
+    public EmployeeResponseDTO register(@RequestBody @Valid EmployeeDTO body) {
+            Employee newEmployee = employeeService.save(body);
+            return new EmployeeResponseDTO(
+                    newEmployee.getEmployeeId(),
+                    newEmployee.getUsername(),
+                    newEmployee.getEmail(),
+                    newEmployee.getName(),
+                    newEmployee.getSurname(),
+                    newEmployee.getAvatar(),
+                    newEmployee.getRoles()
+            );
+
     }
 
     // POST {base_url}/auth/login
