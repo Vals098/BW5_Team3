@@ -152,9 +152,9 @@ public class ClientService {
 
     //   --------------------------- GET ALL CLIENTS -----------------------
 //    GET (base_url}/clients
-    public Page<Client> findAll(int page, int size, Sort sort) {
+    public Page<Client> findAll(int page, int size, Sort sort, Specification<Client> spec) {
         Pageable pageable = PageRequest.of(page, size, sort);
-        return clientRepository.findAll(pageable);
+        return clientRepository.findAll(spec, pageable);
     }
 
     //------------------------------- UPDATE CLIENT --------------------------
