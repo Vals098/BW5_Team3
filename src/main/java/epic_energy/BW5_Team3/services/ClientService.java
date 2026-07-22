@@ -83,11 +83,12 @@ public class ClientService {
         Address legalAddress =
                 addressService.save(payload.legalAddress());
 
-        Address operationalAddress = null;
+        Address operationalAddress;
 
-        if (payload.operationalAddress() != null) {
-            operationalAddress =
-                    addressService.save(payload.operationalAddress());
+        if (payload.operationalAddress() == null) {
+            operationalAddress = legalAddress;
+        } else {
+            operationalAddress = addressService.save(payload.operationalAddress());
         }
 
 //        2. CREATE CLIENT

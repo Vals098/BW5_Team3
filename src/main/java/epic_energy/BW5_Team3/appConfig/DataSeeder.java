@@ -1,7 +1,7 @@
 package epic_energy.BW5_Team3.appConfig;
 
 import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
-import epic_energy.BW5_Team3.repositories.ProvinciaRepository;
+import epic_energy.BW5_Team3.repositories.ProvinceRepository;
 import epic_energy.BW5_Team3.services.CsvImportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,14 +13,14 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private CsvImportService csvImportService;
     @Autowired
-    private ProvinciaRepository provinciaRepository;
+    private ProvinceRepository provinceRepository;
     @Autowired
     private MunicipalityRepository municipalityRepository;
 
     @Override
     public void run(String... args) throws Exception {
         // importa solo se il database e vuoto
-        if (provinciaRepository.count() == 0) {
+        if (provinceRepository.count() == 0) {
             int nProvince = csvImportService.importaProvince("province-italiane.csv");
             System.out.println("Importate " + nProvince + " province");
         } else {

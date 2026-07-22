@@ -13,8 +13,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
     // Métodos útiles para búsquedas comunes y validaciones
     Optional<Employee> findByEmail(String email);
 
-    Optional<Employee> findByUsername(String username);
-
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);
