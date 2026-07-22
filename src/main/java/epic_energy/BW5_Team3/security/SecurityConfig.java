@@ -6,24 +6,36 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
+    @Autowired
+    private JWTFilter jwtFilter;
 
-    //    FILTER CHAIN
-//    setup iniziale con endpoints sbloccati per facilitare i controlli iniziali al team
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.formLogin(formLogin -> formLogin.disable());
+        httpSecurity.formLogin(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        httpSecurity.csrf(csrf -> csrf.disable());
-        httpSecurity.authorizeHttpRequests(req -> req.requestMatchers("/**").permitAll());
 
+        // We allow /auth/** without a token and require a token for any other route
+        httpSecurity.authorizeHttpRequests(req -> req
+                .requestMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
+        );
+
+        // We added the JWTFilter before Spring's default filter
+        httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
