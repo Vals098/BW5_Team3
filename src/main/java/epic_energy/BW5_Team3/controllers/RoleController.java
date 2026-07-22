@@ -17,7 +17,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    // GET /roles 
+    // GET /roles
     @GetMapping
     public Page<Role> getAll(
             @RequestParam(defaultValue = "0") int page,
