@@ -1,6 +1,6 @@
 package epic_energy.BW5_Team3.appConfig;
 
-import epic_energy.BW5_Team3.repositories.ComuneRepository;
+import epic_energy.BW5_Team3.repositories.MunicipalityRepository;
 import epic_energy.BW5_Team3.repositories.ProvinciaRepository;
 import epic_energy.BW5_Team3.services.CsvImportService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class DataSeeder implements CommandLineRunner {
     @Autowired
     private ProvinciaRepository provinciaRepository;
     @Autowired
-    private ComuneRepository comuneRepository;
+    private MunicipalityRepository municipalityRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -27,7 +27,7 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("Province già presenti, salto l'import");
         }
 
-        if (comuneRepository.count() == 0) {
+        if (municipalityRepository.count() == 0) {
             int nComuni = csvImportService.importaComuni("comuni-italiani.csv");
             System.out.println("Importati " + nComuni + " comuni");
         } else {

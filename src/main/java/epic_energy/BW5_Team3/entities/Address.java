@@ -2,7 +2,6 @@ package epic_energy.BW5_Team3.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ public class Address {
     private String street;
 
     @Column(nullable = false)
-    private int houseNumber;
+    private String houseNumber;
 
     @Column(nullable = false)
     private String locality;
@@ -35,6 +34,6 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "municipality_id", nullable = false)
-    private Comune municipality;
+    private Municipality municipality;
 
 }
