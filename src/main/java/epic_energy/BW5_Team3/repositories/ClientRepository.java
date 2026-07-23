@@ -17,5 +17,6 @@ public interface ClientRepository extends JpaRepository<Client, UUID>, JpaSpecif
     Optional<Client> findByEmail(String email);
 
     Optional<Client> findByPec(String pec);
+    
 
 }

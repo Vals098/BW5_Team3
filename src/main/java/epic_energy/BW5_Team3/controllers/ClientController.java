@@ -63,7 +63,8 @@ public class ClientController {
             @RequestParam(required = false) BigDecimal yearlyIncome,
             @RequestParam(required = false) LocalDate entryDate,
             @RequestParam(required = false) LocalDate lastContactDate,
-            @RequestParam(required = false) String legalName) {
+            @RequestParam(required = false) String legalName,
+            @RequestParam(defaultValue = "true") boolean active) {
         Sort sort = switch (orderBy) {
             case "yearlyIncome" -> Sort.by(Sort.Direction.DESC, "yearlyIncome");
             case "entryDate" -> Sort.by(Sort.Direction.DESC, "entryDate");
@@ -75,10 +76,12 @@ public class ClientController {
         Specification<Client> spec = Specification.where(ClientSpecification.hasLegalName(legalName))
                 .and(ClientSpecification.isLowerThanYearIncome(yearlyIncome))
                 .and(ClientSpecification.isBeforeThanEntryDate(entryDate))
-                .and(ClientSpecification.isBeforeThanLastContactDate(lastContactDate));
+                .and(ClientSpecification.isBeforeThanLastContactDate(lastContactDate))
+                .and(active ? ClientSpecification.isActive(true) : null);
 
         return clientService.findAll(page, size, sort, spec);
     }
+
 
     //    GET (base_url}/clients/{id}  USER, ADMIN
     @GetMapping("/{clientId}")

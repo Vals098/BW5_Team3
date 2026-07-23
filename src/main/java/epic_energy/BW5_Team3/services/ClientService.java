@@ -11,6 +11,7 @@ import epic_energy.BW5_Team3.payloads.responseDTOs.AddressResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientDetailsReponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
+import epic_energy.BW5_Team3.specifications.ClientSpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -154,6 +155,17 @@ public class ClientService {
     public Page<Client> findAll(int page, int size, Sort sort, Specification<Client> spec) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return clientRepository.findAll(spec, pageable);
+    }
+
+    //    ------------------------------- GET ALL ACTIVE CLIENTS -----------------------
+    public Page<Client> findAllActive(int page, int size, Sort sort, Specification<Client> spec) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<Client> activeSpec = Specification
+                .where(ClientSpecification.isActive())
+                .and(spec);
+
+        return clientRepository.findAll(activeSpec, pageable);
     }
 
     //------------------------------- UPDATE CLIENT --------------------------

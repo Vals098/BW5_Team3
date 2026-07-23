@@ -28,4 +28,8 @@ public class ClientSpecification {
                 lastContactDate == null ? null : criteriaBuilder.lessThanOrEqualTo(root.get("LastContact"), lastContactDate)));
     }
 
+    public static Specification<Client> isActive(Boolean active) {
+        return (root, query, criteriaBuilder) -> active == null ? null : criteriaBuilder.equal(root.get("isActive"), active);
+    }
+
 }
