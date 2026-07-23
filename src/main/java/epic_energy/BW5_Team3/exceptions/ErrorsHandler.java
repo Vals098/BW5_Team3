@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.exceptions;
 
 import epic_energy.BW5_Team3.payloads.ErrorsDTO;
 import epic_energy.BW5_Team3.payloads.ValidationErrorsDTO;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
@@ -29,7 +30,7 @@ public class ErrorsHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST) //400
     public ValidationErrorsDTO handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
         List<String> errorsList = ex.getBindingResult().getFieldErrors().stream()
-                .map(error ->error.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
 
         return new ValidationErrorsDTO("Validation failed", errorsList, LocalDateTime.now());
