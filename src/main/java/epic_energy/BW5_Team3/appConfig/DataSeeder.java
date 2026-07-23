@@ -1,19 +1,23 @@
 package epic_energy.BW5_Team3.appConfig;
 
+import epic_energy.BW5_Team3.entities.Client;
 import epic_energy.BW5_Team3.entities.InvoiceStatus;
 import epic_energy.BW5_Team3.entities.Municipality;
 import epic_energy.BW5_Team3.entities.Role;
 import epic_energy.BW5_Team3.enums.ClientType;
+import epic_energy.BW5_Team3.payloads.InvoiceDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.AddressRequestDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.repositories.*;
 import epic_energy.BW5_Team3.services.ClientService;
 import epic_energy.BW5_Team3.services.CsvImportService;
+import epic_energy.BW5_Team3.services.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -35,6 +39,10 @@ public class DataSeeder implements CommandLineRunner {
     private ClientRepository clientRepository;
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private InvoiceRepository invoiceRepository;
+    @Autowired
+    private InvoiceService invoiceService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -73,6 +81,9 @@ public class DataSeeder implements CommandLineRunner {
 
         // Popola i client di test
         seedClients(40);
+
+        // Popola le fatture di test
+        seedInvoices(100);
     }
 
     // Popola N client di prova, ognuno con un indirizzo legale collegato a un comune reale già importato
@@ -132,5 +143,43 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         System.out.println("Creati " + creati + " client di test su " + count + " richiesti");
+    }
+
+    // Popola N fatture di prova, ognuna assegnata a un client e uno stato casuali già esistenti
+    private void seedInvoices(int count) {
+        if (invoiceRepository.count() > 0) {
+            System.out.println("Fatture già presenti, salto il seeding");
+            return;
+        }
+
+        List<Client> clients = clientRepository.findAll();
+        List<InvoiceStatus> statuses = invoiceStatusRepository.findAll();
+
+        if (clients.isEmpty() || statuses.isEmpty()) {
+            System.out.println("Nessun client o invoice status trovato: impossibile creare le fatture di test");
+            return;
+        }
+
+        Random random = new Random();
+        int creati = 0;
+
+        for (int i = 1; i <= count; i++) {
+            Client client = clients.get(random.nextInt(clients.size()));
+            InvoiceStatus status = statuses.get(random.nextInt(statuses.size()));
+
+            LocalDate date = LocalDate.now().minusDays(random.nextInt(730)); // fino a 2 anni fa
+            double amount = 50 + random.nextInt(4950); // tra 50 e 5000
+
+            InvoiceDTO dto = new InvoiceDTO(date, amount, i, client.getClientId(), status.getInvoiceStatusId());
+
+            try {
+                invoiceService.save(dto);
+                creati++;
+            } catch (Exception e) {
+                System.out.println("Errore creando la fattura " + i + ": " + e.getMessage());
+            }
+        }
+
+        System.out.println("Create " + creati + " fatture di test su " + count + " richieste");
     }
 }
