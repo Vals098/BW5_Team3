@@ -38,7 +38,7 @@ public class ClientController {
 //    POST {base_url}/clients + payload   USER, ADMIN
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPER_ADMIN')")
     public ClientResponseDTO saveClient(@RequestBody @Validated ClientRequestDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
@@ -55,7 +55,7 @@ public class ClientController {
     //    GET (base_url}/clients   USER, ADMIN
     //    http://localhost:8080/clients?page=0&size=10&orderBy=entryDate
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER','SUPER_ADMIN')")
     public Page<Client> getAllClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -82,14 +82,14 @@ public class ClientController {
 
     //    GET (base_url}/clients/{id}  USER, ADMIN
     @GetMapping("/{clientId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPER_ADMIN')")
     public Client findById(@PathVariable UUID clientId) {
         return clientService.findById(clientId);
     }
 
     //    PUT {base_url}/clients/{id} + payload  ADMIN
     @PutMapping("/{clientId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public ClientDetailsReponseDTO updateClient(
             @PathVariable UUID clientId,
@@ -105,14 +105,20 @@ public class ClientController {
             );
         }
 
+
         return clientService.updateClient(clientId, payload);
     }
 
-//   ----------- first delete idea -----------
-//    DELETE (base_url}/clients/{id}  ADMIN
-//   ----------- second delete idea -----------
+    //   -----------  SOFT DELETE -----------
 //    not a true delete, a method that changes boolean isClientActive from true to false
 //    and sets the client to read-only
+//    DELETE (base_url}/clients/{id}  ADMIN
+    @DeleteMapping("/{clientId}")
+    @PreAuthorize("hasAuthority('ADMIN', 'SUPER_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deactivateClient(@PathVariable UUID clientId) {
+        clientService.deactivateClient(clientId);
+    }
 
 
 }

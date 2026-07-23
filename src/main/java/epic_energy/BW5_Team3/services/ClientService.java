@@ -11,19 +11,15 @@ import epic_energy.BW5_Team3.payloads.responseDTOs.AddressResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientDetailsReponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
-import epic_energy.BW5_Team3.specifications.ClientSpecification;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -74,7 +70,8 @@ public class ClientService {
         checkDuplicateEmail(payload.email());
         checkDuplicatePec(payload.pec());
 
-//        String in ClientType, try{value.of(payload.clientType)} catch{BadRequestException("Invalid Client Type")
+
+//        String in ClientType
         ClientType clientType;
         try {
             clientType = ClientType.valueOf(payload.clientType().toUpperCase());
@@ -129,6 +126,8 @@ public class ClientService {
         client.setEntryDate(LocalDate.now());
         client.setLogo(DEFAULT_LOGO); //future PATCH to update logo
 
+        client.setActive(true);
+
 //        logo idea 2
 //        if logo null or isBlank = DEFAULT_LOGO
 //        if (payload.logo() == null || payload.logo().isBlank()) {
@@ -164,12 +163,17 @@ public class ClientService {
         // 1. Recupera il client
         Client found = findById(clientId);
 
-        // 2. Controlla il ClientType
+        // 2. CONTROLLI
+//         client Type
         ClientType clientType;
         try {
             clientType = ClientType.valueOf(payload.clientType().toUpperCase());
         } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Invalid client type.");
+        }
+//        isActive true
+        if (!found.isActive()) {
+            throw new BadRequestException("This client has been deactivated and cannot be modified.");
         }
 
         // 3. Gestione indirizzi
@@ -247,6 +251,19 @@ public class ClientService {
 
     }
 
+//    ------------------------------- SOFT DELETE ---------------------------------------
+
+    public void deactivateClient(UUID clientId) {
+        Client found = findById(clientId);
+
+        if (!found.isActive()) {
+            throw new BadRequestException("The client is already inactive.");
+        }
+
+        found.setActive(false);
+        clientRepository.save(found);
+        log.info("Client {} has been deactivated.", clientId);
+    }
 }
 
 

@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.services;
 import epic_energy.BW5_Team3.entities.Client;
 import epic_energy.BW5_Team3.entities.Invoice;
 import epic_energy.BW5_Team3.entities.InvoiceStatus;
+import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.InvoiceDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
@@ -31,7 +32,12 @@ public class InvoiceService {
 
     //CRUD basilari
     public Invoice save(InvoiceDTO body) {
-        Client client = clientRepository.findById(body.clientId()).orElseThrow(() -> new NotFoundException("Client with id; " + body.clientId() + " not found"));
+        Client client = clientRepository.findById(body.clientId()).orElseThrow(() -> new NotFoundException("Client with id: " + body.clientId() + " not found"));
+
+//        checks if client is active
+        if (!client.isActive()) {
+            throw new BadRequestException("Cannot create an invoice for a deactivated client.");
+        }
 
         InvoiceStatus status = invoiceStatusRepository.findById(body.invoiceStatusId()).orElseThrow(() -> new NotFoundException("Invoice status not found"));
 
@@ -64,35 +70,35 @@ public class InvoiceService {
         return invoiceRepository.save(found);
     }
 
-    public void findByIdAndDelete(UUID id){
-        Invoice found= this.findById(id);
+    public void findByIdAndDelete(UUID id) {
+        Invoice found = this.findById(id);
         invoiceRepository.delete(found);
     }
 
     //Filtri
 
     //Filtro per clienti
-    public Page<Invoice> findByClient(UUID clientId, Pageable pageable){
+    public Page<Invoice> findByClient(UUID clientId, Pageable pageable) {
         return invoiceRepository.findByClientClientId(clientId, pageable);
     }
 
     //Filtro per stato
-    public Page<Invoice> findByStatus(int statusId, Pageable pageable){
+    public Page<Invoice> findByStatus(int statusId, Pageable pageable) {
         return invoiceRepository.findByInvoiceStatusInvoiceStatusId(statusId, pageable);
     }
 
     //Filtro per data
-    public Page<Invoice> findByDate(LocalDate date, Pageable pageable){
+    public Page<Invoice> findByDate(LocalDate date, Pageable pageable) {
         return invoiceRepository.findByDate(date, pageable);
     }
 
     //Filtro per anno
-    public Page<Invoice> findByYear(int year, Pageable pageable){
+    public Page<Invoice> findByYear(int year, Pageable pageable) {
         return invoiceRepository.findByYear(year, pageable);
     }
 
     //Filtro per range di importi
-    public Page<Invoice> findByAmountBetween(double min, double max, Pageable pageable){
+    public Page<Invoice> findByAmountBetween(double min, double max, Pageable pageable) {
         return invoiceRepository.findByAmountBetween(min, max, pageable);
     }
 

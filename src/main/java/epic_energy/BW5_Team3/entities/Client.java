@@ -59,6 +59,10 @@ Client {
 
     private String logo;
 
+    //    soft delete
+    @Column(name = "is_client_active", nullable = false)
+    private boolean active;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ClientType clientType;

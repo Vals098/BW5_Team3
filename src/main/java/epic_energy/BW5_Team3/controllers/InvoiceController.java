@@ -41,6 +41,7 @@ public class InvoiceController {
                     .toList();
             throw new ValidationException(errorsList);
         }
+
         return invoiceService.save(body);
     }
 
@@ -71,7 +72,7 @@ public class InvoiceController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)//204
-    public void delete(@PathVariable UUID id){
+    public void delete(@PathVariable UUID id) {
         invoiceService.findByIdAndDelete(id);
     }
 }
