@@ -8,9 +8,11 @@ import epic_energy.BW5_Team3.enums.ClientType;
 import epic_energy.BW5_Team3.payloads.InvoiceDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.AddressRequestDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
 import epic_energy.BW5_Team3.repositories.*;
 import epic_energy.BW5_Team3.services.ClientService;
 import epic_energy.BW5_Team3.services.CsvImportService;
+import epic_energy.BW5_Team3.services.EmployeeService;
 import epic_energy.BW5_Team3.services.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,6 +23,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -43,6 +46,10 @@ public class DataSeeder implements CommandLineRunner {
     private InvoiceRepository invoiceRepository;
     @Autowired
     private InvoiceService invoiceService;
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    @Autowired
+    private EmployeeService employeeService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -84,6 +91,51 @@ public class DataSeeder implements CommandLineRunner {
 
         // Popola le fatture di test
         seedInvoices(100);
+
+        // Popola con 3 employes si ruolo diverso
+        if (employeeRepository.count() == 0) {
+            Role adminRole = roleRepository.findByRole("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Ruolo ADMIN non trovato"));
+            Role userRole = roleRepository.findByRole("USER")
+                    .orElseThrow(() -> new RuntimeException("Ruolo USER non trovato"));
+            Role superAdminRole = roleRepository.findByRole("SUPERADMIN")
+                    .orElseThrow(() -> new RuntimeException("Ruolo SUPERADMIN non trovato"));
+
+            EmployeeDTO admin = new EmployeeDTO(
+                    "admin",
+                    "admin@example.com",
+                    "Password123!",
+                    "Mario",
+                    "Admin",
+                    null,
+                    Set.of(adminRole.getRoleId())
+            );
+
+            EmployeeDTO user = new EmployeeDTO(
+                    "utente",
+                    "utente@example.com",
+                    "Password123!",
+                    "Luca",
+                    "Utente",
+                    null,
+                    Set.of(userRole.getRoleId())
+            );
+
+            EmployeeDTO superAdmin = new EmployeeDTO(
+                    "superadmin",
+                    "superadmin@example.com",
+                    "Password123!",
+                    "Anna",
+                    "SuperAdmin",
+                    null,
+                    Set.of(superAdminRole.getRoleId())
+            );
+
+            employeeService.save(admin);
+            employeeService.save(user);
+            employeeService.save(superAdmin);
+
+        }
     }
 
     // Popola N client di prova, ognuno con un indirizzo legale collegato a un comune reale già importato
