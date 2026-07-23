@@ -11,6 +11,7 @@ import epic_energy.BW5_Team3.repositories.InvoiceStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -64,36 +65,39 @@ public class InvoiceService {
         return invoiceRepository.save(found);
     }
 
-    public void findByIdAndDelete(UUID id){
-        Invoice found= this.findById(id);
+    public void findByIdAndDelete(UUID id) {
+        Invoice found = this.findById(id);
         invoiceRepository.delete(found);
     }
 
     //Filtri
 
     //Filtro per clienti
-    public Page<Invoice> findByClient(UUID clientId, Pageable pageable){
+    public Page<Invoice> findByClient(UUID clientId, Pageable pageable) {
         return invoiceRepository.findByClientClientId(clientId, pageable);
     }
 
     //Filtro per stato
-    public Page<Invoice> findByStatus(int statusId, Pageable pageable){
+    public Page<Invoice> findByStatus(int statusId, Pageable pageable) {
         return invoiceRepository.findByInvoiceStatusInvoiceStatusId(statusId, pageable);
     }
 
     //Filtro per data
-    public Page<Invoice> findByDate(LocalDate date, Pageable pageable){
+    public Page<Invoice> findByDate(LocalDate date, Pageable pageable) {
         return invoiceRepository.findByDate(date, pageable);
     }
 
     //Filtro per anno
-    public Page<Invoice> findByYear(int year, Pageable pageable){
+    public Page<Invoice> findByYear(int year, Pageable pageable) {
         return invoiceRepository.findByYear(year, pageable);
     }
 
     //Filtro per range di importi
-    public Page<Invoice> findByAmountBetween(double min, double max, Pageable pageable){
+    public Page<Invoice> findByAmountBetween(double min, double max, Pageable pageable) {
         return invoiceRepository.findByAmountBetween(min, max, pageable);
     }
 
+    public Page<Invoice> findAll(Pageable pageable, Specification<Invoice> spec) {
+        return invoiceRepository.findAll(spec, pageable);
+    }
 }

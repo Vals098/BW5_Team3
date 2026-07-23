@@ -7,13 +7,18 @@ import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientDetailsReponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.services.ClientService;
+import epic_energy.BW5_Team3.specifications.ClientSpecification;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,13 +53,31 @@ public class ClientController {
     }
 
     //    GET (base_url}/clients   USER, ADMIN
+    //    http://localhost:8080/clients?page=0&size=10&orderBy=entryDate
     @GetMapping
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public Page<Client> getAllClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "clientId") String sortBy) {
-        return clientService.findAll(page, size, sortBy);
+            @RequestParam(defaultValue = "legalName", required = false) String orderBy,
+            @RequestParam(required = false) BigDecimal yearlyIncome,
+            @RequestParam(required = false) LocalDate entryDate,
+            @RequestParam(required = false) LocalDate lastContactDate,
+            @RequestParam(required = false) String legalName) {
+        Sort sort = switch (orderBy) {
+            case "yearlyIncome" -> Sort.by(Sort.Direction.DESC, "yearlyIncome");
+            case "entryDate" -> Sort.by(Sort.Direction.DESC, "entryDate");
+            case "lastContactDate" -> Sort.by(Sort.Direction.DESC, "lastContactDate");
+            case "province" -> Sort.by(Sort.Direction.ASC, "legalAddress.municipality.province.provinceName");
+            default -> Sort.by(Sort.Direction.ASC, "legalName");
+        };
+
+        Specification<Client> spec = Specification.where(ClientSpecification.hasLegalName(legalName))
+                .and(ClientSpecification.isLowerThanYearIncome(yearlyIncome))
+                .and(ClientSpecification.isBeforeThanEntryDate(entryDate))
+                .and(ClientSpecification.isBeforeThanLastContactDate(lastContactDate));
+
+        return clientService.findAll(page, size, sort, spec);
     }
 
     //    GET (base_url}/clients/{id}  USER, ADMIN

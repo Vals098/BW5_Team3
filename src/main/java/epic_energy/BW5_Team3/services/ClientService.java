@@ -11,14 +11,19 @@ import epic_energy.BW5_Team3.payloads.responseDTOs.AddressResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientDetailsReponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.ClientResponseDTO;
 import epic_energy.BW5_Team3.repositories.ClientRepository;
+import epic_energy.BW5_Team3.specifications.ClientSpecification;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -147,9 +152,9 @@ public class ClientService {
 
     //   --------------------------- GET ALL CLIENTS -----------------------
 //    GET (base_url}/clients
-    public Page<Client> findAll(int page, int size, String sortBy) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return clientRepository.findAll(pageable);
+    public Page<Client> findAll(int page, int size, Sort sort, Specification<Client> spec) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return clientRepository.findAll(spec, pageable);
     }
 
     //------------------------------- UPDATE CLIENT --------------------------
