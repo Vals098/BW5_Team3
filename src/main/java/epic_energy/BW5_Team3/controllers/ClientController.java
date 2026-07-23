@@ -38,7 +38,7 @@ public class ClientController {
 //    POST {base_url}/clients + payload   USER, ADMIN
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPERADMIN')")
     public ClientResponseDTO saveClient(@RequestBody @Validated ClientRequestDTO payload, BindingResult validationResult) {
 
         if (validationResult.hasErrors()) {
@@ -55,7 +55,7 @@ public class ClientController {
     //    GET (base_url}/clients   USER, ADMIN
     //    http://localhost:8080/clients?page=0&size=10&orderBy=entryDate
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER','SUPERADMIN')")
     public Page<Client> getAllClients(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -77,7 +77,8 @@ public class ClientController {
                 .and(ClientSpecification.isLowerThanYearIncome(yearlyIncome))
                 .and(ClientSpecification.isBeforeThanEntryDate(entryDate))
                 .and(ClientSpecification.isBeforeThanLastContactDate(lastContactDate))
-                .and(active ? ClientSpecification.isActive(true) : null);
+//                .and(active ? ClientSpecification.isActive(true) : null);
+                .and(ClientSpecification.isActive(active));
 
         return clientService.findAll(page, size, sort, spec);
     }
@@ -85,14 +86,14 @@ public class ClientController {
 
     //    GET (base_url}/clients/{id}  USER, ADMIN
     @GetMapping("/{clientId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','USER','SUPERADMIN')")
     public Client findById(@PathVariable UUID clientId) {
         return clientService.findById(clientId);
     }
 
     //    PUT {base_url}/clients/{id} + payload  ADMIN
     @PutMapping("/{clientId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','SUPERADMIN')")
     @ResponseStatus(HttpStatus.OK)
     public ClientDetailsReponseDTO updateClient(
             @PathVariable UUID clientId,
@@ -117,7 +118,7 @@ public class ClientController {
 //    and sets the client to read-only
 //    DELETE (base_url}/clients/{id}  ADMIN
     @DeleteMapping("/{clientId}")
-    @PreAuthorize("hasAuthority('ADMIN', 'SUPER_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deactivateClient(@PathVariable UUID clientId) {
         clientService.deactivateClient(clientId);
