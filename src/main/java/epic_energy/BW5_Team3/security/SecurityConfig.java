@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,6 +28,7 @@ public class SecurityConfig {
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.sessionManagement(sessions -> sessions.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        httpSecurity.cors(Customizer.withDefaults());
         httpSecurity.csrf(csrf -> csrf.disable());
 
 
@@ -34,6 +36,7 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(req -> req
                 // We allow /auth/** without a token and require a token for any other route
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/roles/**").permitAll()
 
 //                .requestMatchers(HttpMethod.POST, "/invoices/statuses").hasAuthority("ADMIN")
 //

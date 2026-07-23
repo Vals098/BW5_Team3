@@ -75,6 +75,8 @@ public class JWTFilter extends OncePerRequestFilter {
     // Ignorar el filtro para las rutas públicas de autenticación (/auth/**)
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return new AntPathMatcher().match("/auth/**", request.getServletPath());
+        String path = request.getServletPath();
+        AntPathMatcher matcher = new AntPathMatcher();
+        return matcher.match("/auth/**", path) || matcher.match("/roles/**", path);
     }
 }
