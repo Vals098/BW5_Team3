@@ -2,10 +2,7 @@ package epic_energy.BW5_Team3.payloads.requestDTOs;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-
-import java.util.Set;
 
 public record EmployeeDTO(
         @NotBlank(message = "The username is required")
@@ -26,8 +23,9 @@ public record EmployeeDTO(
         @NotBlank(message = "The surname is required")
         String surname,
 
-        String avatar, // Opcional
+        String avatar // Opcional
 
-        @NotEmpty(message = "The employee must have at least one assigned role")
-        Set<Integer> rolesIds
-) {}
+//        @NotEmpty(message = "The employee must have at least one assigned role")
+//        Set<Integer> rolesIds
+) {
+}

@@ -1,11 +1,9 @@
 package epic_energy.BW5_Team3.appConfig;
 
-import epic_energy.BW5_Team3.entities.Client;
-import epic_energy.BW5_Team3.entities.InvoiceStatus;
-import epic_energy.BW5_Team3.entities.Municipality;
-import epic_energy.BW5_Team3.entities.Role;
+import epic_energy.BW5_Team3.entities.*;
 import epic_energy.BW5_Team3.enums.ClientType;
 import epic_energy.BW5_Team3.payloads.InvoiceDTO;
+import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.AddressRequestDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.ClientRequestDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
@@ -23,7 +21,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -107,8 +104,7 @@ public class DataSeeder implements CommandLineRunner {
                     "Password123!",
                     "Mario",
                     "Admin",
-                    null,
-                    Set.of(adminRole.getRoleId())
+                    null
             );
 
             EmployeeDTO user = new EmployeeDTO(
@@ -117,8 +113,7 @@ public class DataSeeder implements CommandLineRunner {
                     "Password123!",
                     "Luca",
                     "Utente",
-                    null,
-                    Set.of(userRole.getRoleId())
+                    null
             );
 
             EmployeeDTO superAdmin = new EmployeeDTO(
@@ -127,13 +122,22 @@ public class DataSeeder implements CommandLineRunner {
                     "Password123!",
                     "Anna",
                     "SuperAdmin",
-                    null,
-                    Set.of(superAdminRole.getRoleId())
+                    null
             );
 
-            employeeService.save(admin);
-            employeeService.save(user);
-            employeeService.save(superAdmin);
+            Employee adminEmployee = employeeService.save(admin);
+            Employee userEmployee = employeeService.save(user);
+            Employee superAdminEmployee = employeeService.save(superAdmin);
+
+            employeeService.updateRole(
+                    adminEmployee.getEmployeeId(),
+                    new UpdateRoleDTO("ADMIN")
+            );
+
+            employeeService.updateRole(
+                    superAdminEmployee.getEmployeeId(),
+                    new UpdateRoleDTO("SUPERADMIN")
+            );
 
         }
     }

@@ -4,7 +4,9 @@ import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.entities.Role;
 import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
+import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
 import epic_energy.BW5_Team3.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -41,10 +44,11 @@ public class EmployeeService {
             throw new BadRequestException("El nombre de usuario " + body.username() + " ya está en uso.");
         }
 
-        List<Role> rolesList = roleRepository.findAllById(body.rolesIds());
-        if (rolesList.isEmpty()) {
-            throw new BadRequestException("Los roles especificados no existen.");
-        }
+//        List<Role> rolesList = roleRepository.findAllById(body.rolesIds());
+//        if (rolesList.isEmpty()) {
+//            throw new BadRequestException("Los roles especificados no existen.");
+//        }
+
 
         Employee newEmployee = new Employee();
         newEmployee.setUsername(body.username());
@@ -57,7 +61,9 @@ public class EmployeeService {
             newEmployee.setAvatar(body.avatar());
         }
 
-        newEmployee.setRoles(new HashSet<>(rolesList));
+//        newEmployee.setRoles(new HashSet<>(rolesList));
+        Role userRole = roleRepository.findByRole("USER").orElseThrow(() -> new NotFoundException("Role USER not found."));
+        newEmployee.setRoles(Set.of(userRole));
 
         return employeeRepository.save(newEmployee);
     }
@@ -86,7 +92,7 @@ public class EmployeeService {
             throw new BadRequestException("El username " + body.username() + " ya está en uso por otro usuario.");
         }
 
-        List<Role> rolesList = roleRepository.findAllById(body.rolesIds());
+//        List<Role> rolesList = roleRepository.findAllById(body.rolesIds());
 
         found.setUsername(body.username());
         found.setEmail(body.email());
@@ -96,7 +102,7 @@ public class EmployeeService {
         if (body.avatar() != null && !body.avatar().isBlank()) {
             found.setAvatar(body.avatar());
         }
-        found.setRoles(new HashSet<>(rolesList));
+//        found.setRoles(new HashSet<>(rolesList));
 
         return employeeRepository.save(found);
     }
@@ -105,5 +111,20 @@ public class EmployeeService {
     public void findByIdAndDelete(UUID employeeId) {
         Employee found = this.findById(employeeId);
         employeeRepository.delete(found);
+    }
+
+    //    UPDATE ROLE
+    public UpdateRoleResponseDTO updateRole(UUID employeeId, UpdateRoleDTO payload) {
+
+        Employee employee = findById(employeeId);
+
+        Role role = roleRepository.findByRole(payload.role().toUpperCase()).orElseThrow(() -> new NotFoundException("The role " + payload.role() + " doesn't exist."));
+
+        employee.setRoles(new HashSet<>(List.of(role)));
+
+        employeeRepository.save(employee);
+
+        return new UpdateRoleResponseDTO("The role of the employee " + employee.getName() + " " + employee.getSurname() + " has been updated to: " + role.getRole());
+
     }
 }
