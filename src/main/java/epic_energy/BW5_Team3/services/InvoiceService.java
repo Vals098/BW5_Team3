@@ -76,7 +76,7 @@ public class InvoiceService {
     }
 
     //Filtri
-
+// ------------------------ Davide ----------------------------
     //Filtro per clienti
     public Page<Invoice> findByClient(UUID clientId, Pageable pageable) {
         return invoiceRepository.findByClientClientId(clientId, pageable);
@@ -102,4 +102,11 @@ public class InvoiceService {
         return invoiceRepository.findByAmountBetween(min, max, pageable);
     }
 
+<<<<<<< Updated upstream
+=======
+    // ------------------------ Biagio ----------------------------
+    public Page<Invoice> findAll(Pageable pageable, Specification<Invoice> spec) {
+        return invoiceRepository.findAll(spec, pageable);
+    }
+>>>>>>> Stashed changes
 }
