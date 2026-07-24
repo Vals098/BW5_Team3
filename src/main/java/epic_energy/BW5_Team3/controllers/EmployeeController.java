@@ -1,11 +1,12 @@
 package epic_energy.BW5_Team3.controllers;
 
 import epic_energy.BW5_Team3.entities.Employee;
-import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdatePasswordDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdateProfileDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
-import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.MessageResponseDTO;
 import epic_energy.BW5_Team3.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,22 +44,6 @@ public class EmployeeController {
         return employeeService.findById(employeeId);
     }
 
-    // GET /employees/me
-    @GetMapping("/me")
-    public EmployeeResponseDTO getMyProfile(
-            @AuthenticationPrincipal Employee currentEmployee) {
-        return employeeService.getMyProfile(currentEmployee);
-    }
-
-    //    PUT /employees/me
-    @PutMapping("/me")
-    public EmployeeResponseDTO updateMyProfile(
-            @AuthenticationPrincipal Employee currentEmployee,
-            @RequestBody @Valid EmployeeUpdateProfileDTO body) {
-
-        return employeeService.updateMyProfile(currentEmployee, body);
-    }
-
     // PUT /employees/{id} (Solo ADMIN)
     @PutMapping("/{employeeId}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'SUPERADMIN')")
@@ -78,7 +63,7 @@ public class EmployeeController {
     @PatchMapping("{employeeId}/role")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('SUPERADMIN')")
-    public UpdateRoleResponseDTO updateRole(
+    public MessageResponseDTO updateRole(
             @PathVariable UUID employeeId,
             @RequestBody @Validated UpdateRoleDTO payload) {
 
@@ -86,5 +71,30 @@ public class EmployeeController {
 
     }
 
+    //    ---------------------- /me -------------------------
+    // GET /employees/me
+    @GetMapping("/me")
+    public EmployeeResponseDTO getMyProfile(
+            @AuthenticationPrincipal Employee currentEmployee) {
+        return employeeService.getMyProfile(currentEmployee);
+    }
+
+    //    PUT /employees/me
+    @PutMapping("/me")
+    public EmployeeResponseDTO updateMyProfile(
+            @AuthenticationPrincipal Employee currentEmployee,
+            @RequestBody @Valid EmployeeUpdateProfileDTO body) {
+
+        return employeeService.updateMyProfile(currentEmployee, body);
+    }
+
+    //    PATCH /employees/me/password
+    @PatchMapping("/me/password")
+    public MessageResponseDTO updateMyPassword(
+            @AuthenticationPrincipal Employee currentEmployee,
+            @RequestBody @Valid EmployeeUpdatePasswordDTO body) {
+
+        return employeeService.updateMyPassword(currentEmployee, body);
+    }
 
 }

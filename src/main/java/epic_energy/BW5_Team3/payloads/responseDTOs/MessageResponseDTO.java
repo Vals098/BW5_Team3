@@ -1,6 +1,6 @@
 package epic_energy.BW5_Team3.payloads.responseDTOs;
 
-public record UpdateRoleResponseDTO(
+public record MessageResponseDTO(
         String message
 ) {
 }

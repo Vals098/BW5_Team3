@@ -4,11 +4,12 @@ import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.entities.Role;
 import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
-import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdatePasswordDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdateProfileDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
-import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.MessageResponseDTO;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
 import epic_energy.BW5_Team3.repositories.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +117,7 @@ public class EmployeeService {
     }
 
     //    UPDATE ROLE
-    public UpdateRoleResponseDTO updateRole(UUID employeeId, UpdateRoleDTO payload) {
+    public MessageResponseDTO updateRole(UUID employeeId, UpdateRoleDTO payload) {
 
         Employee employee = findById(employeeId);
 
@@ -126,10 +127,11 @@ public class EmployeeService {
 
         employeeRepository.save(employee);
 
-        return new UpdateRoleResponseDTO("The role of the employee " + employee.getName() + " " + employee.getSurname() + " has been updated to: " + role.getRole());
+        return new MessageResponseDTO("The role of the employee " + employee.getName() + " " + employee.getSurname() + " has been updated to: " + role.getRole());
 
     }
 
+    //    ------------------------ ME -------------------------------
     //    GET MY PROFILE
     public EmployeeResponseDTO getMyProfile(Employee currentEmployee) {
         return new EmployeeResponseDTO(
@@ -173,6 +175,24 @@ public class EmployeeService {
                 saved.getAvatar(),
                 saved.getRoles()
         );
+    }
+
+    //    UPDATE PASSWORD
+    public MessageResponseDTO updateMyPassword(
+            Employee currentEmployee,
+            EmployeeUpdatePasswordDTO body) {
+
+        if (!passwordEncoder.matches(body.currentPassword(), currentEmployee.getPassword())) {
+            throw new BadRequestException("Current password is incorrect.");
+        }
+
+        currentEmployee.setPassword(
+                passwordEncoder.encode(body.newPassword())
+        );
+
+        Employee saved = employeeRepository.save(currentEmployee);
+
+        return new MessageResponseDTO("Password updated successfully.");
     }
 
 }
