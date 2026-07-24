@@ -1,5 +1,7 @@
 package epic_energy.BW5_Team3.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.entities.Role;
 import epic_energy.BW5_Team3.exceptions.BadRequestException;
@@ -19,23 +21,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 
 @Service
 public class EmployeeService {
 
+    //    Cloudinary DI
+    private final Cloudinary fileUploader;
     @Autowired
     private EmployeeRepository employeeRepository;
-
     @Autowired
     private RoleRepository roleRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public EmployeeService(Cloudinary fileUploader) {
+        this.fileUploader = fileUploader;
+    }
 
     // CREATE / REGISTER
     public Employee save(EmployeeDTO body) {
@@ -193,6 +198,41 @@ public class EmployeeService {
         Employee saved = employeeRepository.save(currentEmployee);
 
         return new MessageResponseDTO("Password updated successfully.");
+    }
+
+    //    UPDATE AVATAR
+    public EmployeeResponseDTO updateMyAvatar(Employee currentEmployee, MultipartFile avatar) {
+
+        if (avatar.isEmpty()) {
+            throw new BadRequestException("Please select an image.");
+        }
+
+        try {
+
+            Map<?, ?> result = fileUploader.uploader().upload(
+                    avatar.getBytes(),
+                    ObjectUtils.emptyMap()
+            );
+
+            String url = (String) result.get("secure_url");
+
+            currentEmployee.setAvatar(url);
+
+            Employee saved = employeeRepository.save(currentEmployee);
+
+            return new EmployeeResponseDTO(
+                    saved.getEmployeeId(),
+                    saved.getName(),
+                    saved.getSurname(),
+                    saved.getEmail(),
+                    saved.getUsername(),
+                    saved.getAvatar(),
+                    saved.getRoles()
+            );
+
+        } catch (IOException e) {
+            throw new BadRequestException("Error while uploading the image.");
+        }
     }
 
 }
