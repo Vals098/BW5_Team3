@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.controllers;
 import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdateProfileDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
 import epic_energy.BW5_Team3.services.EmployeeService;
@@ -35,11 +36,6 @@ public class EmployeeController {
         return employeeService.findAll(page, size, sortBy);
     }
 
-    // GET /employees/me
-    @GetMapping("/me")
-    public Employee getMyProfile(@AuthenticationPrincipal Employee currentEmployee) {
-        return currentEmployee;
-    }
 
     // GET /employees/{id}
     @GetMapping("/{employeeId}")
@@ -47,6 +43,21 @@ public class EmployeeController {
         return employeeService.findById(employeeId);
     }
 
+    // GET /employees/me
+    @GetMapping("/me")
+    public EmployeeResponseDTO getMyProfile(
+            @AuthenticationPrincipal Employee currentEmployee) {
+        return employeeService.getMyProfile(currentEmployee);
+    }
+
+    //    PUT /employees/me
+    @PutMapping("/me")
+    public EmployeeResponseDTO updateMyProfile(
+            @AuthenticationPrincipal Employee currentEmployee,
+            @RequestBody @Valid EmployeeUpdateProfileDTO body) {
+
+        return employeeService.updateMyProfile(currentEmployee, body);
+    }
 
     // PUT /employees/{id} (Solo ADMIN)
     @PutMapping("/{employeeId}")
@@ -73,13 +84,6 @@ public class EmployeeController {
 
         return employeeService.updateRole(employeeId, payload);
 
-    }
-
-    //    GET /me  MY PROFILE
-    @GetMapping("/me")
-    public EmployeeResponseDTO getMyProfile(
-            @AuthenticationPrincipal Employee currentEmployee) {
-        return employeeService.getMyProfile(currentEmployee);
     }
 
 

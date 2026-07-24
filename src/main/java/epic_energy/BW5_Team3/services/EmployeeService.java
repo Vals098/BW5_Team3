@@ -6,6 +6,7 @@ import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeUpdateProfileDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
@@ -129,7 +130,7 @@ public class EmployeeService {
 
     }
 
-    //    MY PROFILE
+    //    GET MY PROFILE
     public EmployeeResponseDTO getMyProfile(Employee currentEmployee) {
         return new EmployeeResponseDTO(
                 currentEmployee.getEmployeeId(),
@@ -139,6 +140,38 @@ public class EmployeeService {
                 currentEmployee.getUsername(),
                 currentEmployee.getAvatar(),
                 currentEmployee.getRoles()
+        );
+    }
+
+    //    UPDATE MY PROFILE
+//    all but password and avatar
+    public EmployeeResponseDTO updateMyProfile(Employee currentEmployee, EmployeeUpdateProfileDTO body) {
+
+        if (!currentEmployee.getEmail().equals(body.email())
+                && employeeRepository.existsByEmail(body.email())) {
+            throw new BadRequestException("Email already in use.");
+        }
+
+        if (!currentEmployee.getUsername().equals(body.username())
+                && employeeRepository.existsByUsername(body.username())) {
+            throw new BadRequestException("Username already in use.");
+        }
+
+        currentEmployee.setUsername(body.username());
+        currentEmployee.setEmail(body.email());
+        currentEmployee.setName(body.name());
+        currentEmployee.setSurname(body.surname());
+
+        Employee saved = employeeRepository.save(currentEmployee);
+
+        return new EmployeeResponseDTO(
+                saved.getEmployeeId(),
+                saved.getUsername(),
+                saved.getEmail(),
+                saved.getName(),
+                saved.getSurname(),
+                saved.getAvatar(),
+                saved.getRoles()
         );
     }
 
