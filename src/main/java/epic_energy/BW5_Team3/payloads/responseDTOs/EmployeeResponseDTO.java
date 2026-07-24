@@ -7,10 +7,11 @@ import java.util.UUID;
 
 public record EmployeeResponseDTO(
         UUID employeeId,
-        String username,
-        String email,
         String name,
         String surname,
+        String email,
+        String username,
         String avatar,
         Set<Role> roles
-) {}
+) {
+}
