@@ -6,6 +6,7 @@ import epic_energy.BW5_Team3.exceptions.BadRequestException;
 import epic_energy.BW5_Team3.exceptions.NotFoundException;
 import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
 import epic_energy.BW5_Team3.repositories.EmployeeRepository;
 import epic_energy.BW5_Team3.repositories.RoleRepository;
@@ -127,4 +128,18 @@ public class EmployeeService {
         return new UpdateRoleResponseDTO("The role of the employee " + employee.getName() + " " + employee.getSurname() + " has been updated to: " + role.getRole());
 
     }
+
+    //    MY PROFILE
+    public EmployeeResponseDTO getMyProfile(Employee currentEmployee) {
+        return new EmployeeResponseDTO(
+                currentEmployee.getEmployeeId(),
+                currentEmployee.getName(),
+                currentEmployee.getSurname(),
+                currentEmployee.getEmail(),
+                currentEmployee.getUsername(),
+                currentEmployee.getAvatar(),
+                currentEmployee.getRoles()
+        );
+    }
+
 }

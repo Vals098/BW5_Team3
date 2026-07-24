@@ -3,6 +3,7 @@ package epic_energy.BW5_Team3.controllers;
 import epic_energy.BW5_Team3.entities.Employee;
 import epic_energy.BW5_Team3.payloads.UpdateRoleDTO;
 import epic_energy.BW5_Team3.payloads.requestDTOs.EmployeeDTO;
+import epic_energy.BW5_Team3.payloads.responseDTOs.EmployeeResponseDTO;
 import epic_energy.BW5_Team3.payloads.responseDTOs.UpdateRoleResponseDTO;
 import epic_energy.BW5_Team3.services.EmployeeService;
 import jakarta.validation.Valid;
@@ -72,6 +73,13 @@ public class EmployeeController {
 
         return employeeService.updateRole(employeeId, payload);
 
+    }
+
+    //    GET /me  MY PROFILE
+    @GetMapping("/me")
+    public EmployeeResponseDTO getMyProfile(
+            @AuthenticationPrincipal Employee currentEmployee) {
+        return employeeService.getMyProfile(currentEmployee);
     }
 
 
